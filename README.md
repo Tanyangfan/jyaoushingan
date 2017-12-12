@@ -1,0 +1,2 @@
+# jyaoushingan
+an ocr app
