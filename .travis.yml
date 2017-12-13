@@ -12,7 +12,6 @@ script:
 - "./gradlew assembleRelease"
 
 branches:
-  tags: true
   only:
   - master
 
