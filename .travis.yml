@@ -21,7 +21,10 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    #repo: Tanyangfan/jyaoushingan
+    branch:
+      only:
+      - master
+#    repo: Tanyangfan/jyaoushingan
 before_install:
 - openssl aes-256-cbc -K $encrypted_1dab868079d5_key -iv $encrypted_1dab868079d5_iv
   -in keys/mushi.jks.enc -out keys/mushi.jks -d
