@@ -23,7 +23,7 @@ android {
         release {
             storeFile file("../keys/mushi.jks")
             storePassword System.getenv("STORE_PASSWORD") ?: System.console()?.readLine("\nStore password:")
-            keyAlias System.getenv("KEY_ALIAS")
+            keyAlias System.getenv("KEY_ALIAS") ?: System.console()?.readLine("\nKeyAlias:")
             keyPassword System.getenv("KEY_PASSWORD") ?: System.console()?.readLine("\nKey password:")
         }
     }
