@@ -16,3 +16,6 @@ deploy:
   skip_cleanup: true
   on:
     repo: Tanyangfan/jyaoushingan
+
+before_install:
+     - chmod +x gradlew
