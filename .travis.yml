@@ -13,7 +13,7 @@ script:
   - "./gradlew assembleRelease"
 
 before_deploy:
-  - ls app/build/outputs/apk/release/  
+  - ls app/build/outputs/apk/  
 
 deploy:
   provider: releases
