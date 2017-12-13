@@ -15,7 +15,7 @@ class App : Application() {
 
     companion object {
         fun getSaveFile(context: Context): File {
-            return File(context.filesDir, "pic.jpg")
+            return File(context.filesDir, "img.jpg")
         }
     }
 
