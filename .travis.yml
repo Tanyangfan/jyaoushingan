@@ -10,6 +10,12 @@ android:
   - extra-android-m2repository
 script:
 - "./gradlew assembleRelease"
+
+branches:
+  tags: true
+  only:
+  - master
+
 before_deploy:
 #- rm app/build/outputs/apk/release/output.json
 deploy:
