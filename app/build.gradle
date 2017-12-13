@@ -18,10 +18,20 @@ android {
             abiFilters 'armeabi', 'armeabi-v7a', "arm64-v8a", 'x86'
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("../keys/mushi.jks")
+            storePassword System.getenv("STORE_PASSWORD") ?: System.console()?.readLine("\nStore password:")
+            keyAlias System.getenv("KEY_ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD") ?: System.console()?.readLine("\nKey password:")
         }
     }
 

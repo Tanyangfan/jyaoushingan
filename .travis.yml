@@ -2,27 +2,25 @@ language: android
 jdk: openjdk8
 android:
   components:
-    - tools
-    - build-tools-27.0.2
-    - build-tools-26.0.2
-    - android-26
-    - extra-google-m2repository
-    - extra-android-m2repository
-
+  - tools
+  - build-tools-27.0.2
+  - build-tools-26.0.2
+  - android-26
+  - extra-google-m2repository
+  - extra-android-m2repository
 script:
-  - "./gradlew assembleRelease"
-
+- "./gradlew assembleRelease"
 before_deploy:
-  - ls app/build/outputs/apk/  
-
+- rm app/build/outputs/apk/release/output.json
 deploy:
   provider: releases
   api_key:
     secure: U5hW5xQQ1ugWYrrnfDmV5VIMn4c2fKDi9LE18F9sIJI7EU9NnPSC98bS0XwbAYyNIHkwmbwvBridhWxYn6/mTlic85sIcZBZQxZRylnx7BmFDTLwbVkxdg+AuqiBQFRJZWMHv+XVEJo5760Tq96ZmLZVnzTTZFlCk9u2737Vw+5WhajYv6N1NtFfdeSqaXqpdB70nq+z+kE7oX8daHjJqsfvRMMcBTHqtOPPaPSAR5qOY+r3d8Q7tKlLAGa4gBimlKvN2LSgVKhcTUzJUlk1F5HDIe3fKpKOJGPv/cExITkKJGgCIptQuoEHlnNftY57sIXrtXtE1LAD+oLR4sZpM2pJ557K36sgPxLcg9AQT8YUqGhsouY6DURtNPDztidFKmowkazbSQ3CbkZBLHX2//OLle42sbXZBHitl8VTZSjQcRXKa8shOIdtVrIAW0jwBPiIIrN3xSZHgxsTfcTBoqCn44VPXw/TPyaq4J7oe322WX/9dPKUxyotcN29YdtbqGuyFAU/GpOlqOgsjBXBgcQN11qOW7WnxcnJeGIQuGi5+poLdG6jrkyy5sa9iDQ1FCV75b94Ou9ivrNIPfrM1r8GhweB0MLm9MFfxo70+rkH6i506ptcKfR417ohp5wtaRcjnA/U09ijJQx9Fvp9+EgvQrmDvOxKzct6nAPG0Xw=
-  file: app/build/outputs/apk/release/JyaouShingan_1.0-unsigned.apk
+  file: app/build/outputs/apk/release/*
   skip_cleanup: true
   on:
     repo: Tanyangfan/jyaoushingan
-
 before_install:
-     - chmod +x gradlew
+- openssl aes-256-cbc -K $encrypted_eab971aafcd2_key -iv $encrypted_eab971aafcd2_iv
+  -in keys/mushi.jks.enc -out keys/mushi.jks -d
+- chmod +x gradlew
