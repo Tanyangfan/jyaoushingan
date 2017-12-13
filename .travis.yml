@@ -21,7 +21,7 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    branch:
+    branches:
       only:
       - master
 #    repo: Tanyangfan/jyaoushingan
