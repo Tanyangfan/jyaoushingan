@@ -11,7 +11,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
@@ -57,4 +57,6 @@ dependencies {
     implementation files('libs/ocr-sdk.jar')
     compile project(path: ':ocr_ui')
     implementation 'org.greenrobot:eventbus:3.0.0'
+
+    compile 'android.arch.lifecycle:extensions:' + rootProject.archLifecycleVersion
 }

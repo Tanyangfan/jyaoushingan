@@ -1,4 +1,4 @@
-package mushi.rikka.jyaoushingan
+package mushi.rikka.jyaoushingan.main
 
 import android.app.Activity
 import android.content.ClipData
@@ -10,21 +10,21 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.support.v7.app.AppCompatActivity
 import android.text.method.ScrollingMovementMethod
 import android.widget.Toast
-import com.baidu.ocr.sdk.OCR
-import com.baidu.ocr.sdk.OnResultListener
-import com.baidu.ocr.sdk.exception.OCRError
-import com.baidu.ocr.sdk.model.AccessToken
 import com.baidu.ocr.ui.camera.CameraActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import mushi.rikka.jyaoushingan.App
+import mushi.rikka.jyaoushingan.ProgressDialog
+import mushi.rikka.jyaoushingan.R
+import mushi.rikka.jyaoushingan.RecognizeService
+import mushi.rikka.jyaoushingan.base.BaseActivity
+import mushi.rikka.jyaoushingan.orc.OcrManager
 import mushi.rikka.jyaoushingan.screencapture.FloatWindowsService
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private val REQUEST_CODE_ACCURATE_BASIC = 101
     private val REQUEST_MEDIA_PROJECTION = 102
@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         captureBtn.setOnClickListener({
-            if (OCR.getInstance().hasGotToken()) {
+            if (!OcrManager.instance.hasInit()) {
                 return@setOnClickListener
             }
             requestCapturePermission()
@@ -95,11 +95,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        OCR.getInstance().release()
+        OcrManager.instance.release()
     }
 
     private fun takePhoto() {
-        if (OCR.getInstance().hasGotToken()) {
+        if (!OcrManager.instance.hasInit()) {
             return
         }
 
@@ -138,14 +138,7 @@ class MainActivity : AppCompatActivity() {
      * 初始化Token
      */
     private fun iniAccessToken() {
-        OCR.getInstance().initAccessToken(object : OnResultListener<AccessToken> {
-            override fun onResult(accessToken: AccessToken) {
-            }
-
-            override fun onError(error: OCRError) {
-                error.printStackTrace()
-            }
-        }, applicationContext)
+        OcrManager.instance.init(applicationContext)
     }
 
     private fun doCopy() {

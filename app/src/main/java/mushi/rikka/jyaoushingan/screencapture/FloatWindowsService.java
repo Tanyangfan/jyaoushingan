@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import mushi.rikka.jyaoushingan.App;
-import mushi.rikka.jyaoushingan.MainActivity;
+import mushi.rikka.jyaoushingan.main.MainActivity;
 import mushi.rikka.jyaoushingan.R;
 
 /**
