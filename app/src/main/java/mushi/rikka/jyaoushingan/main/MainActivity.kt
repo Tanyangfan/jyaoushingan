@@ -47,7 +47,7 @@ class MainActivity : BaseActivity() {
         })
 
         captureBtn.setOnClickListener({
-            if (!OcrManager.instance.hasInit()) {
+            if (!OcrManager.hasInit()) {
                 return@setOnClickListener
             }
             requestCapturePermission()
@@ -96,11 +96,11 @@ class MainActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        OcrManager.instance.release()
+        OcrManager.release()
     }
 
     private fun takePhoto() {
-        if (!OcrManager.instance.hasInit()) {
+        if (!OcrManager.hasInit()) {
             return
         }
 
@@ -139,7 +139,7 @@ class MainActivity : BaseActivity() {
      * 初始化Token
      */
     private fun iniAccessToken() {
-        OcrManager.instance.init(applicationContext)
+        OcrManager.init(applicationContext)
     }
 
     private fun doCopy() {
