@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.method.ScrollingMovementMethod
-import android.widget.Toast
 import com.baidu.ocr.ui.camera.CameraActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import mushi.rikka.jyaoushingan.App
@@ -21,6 +20,7 @@ import mushi.rikka.jyaoushingan.RecognizeService
 import mushi.rikka.jyaoushingan.base.BaseActivity
 import mushi.rikka.jyaoushingan.orc.OcrManager
 import mushi.rikka.jyaoushingan.screencapture.FloatWindowsService
+import mushi.rikka.jyaoushingan.utils.showToast
 import java.io.File
 
 
@@ -64,6 +64,7 @@ class MainActivity : BaseActivity() {
         resultTxt.movementMethod = ScrollingMovementMethod.getInstance()
 
         cropPhoto()
+
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -145,7 +146,7 @@ class MainActivity : BaseActivity() {
         val cmb = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("label", resultTxt.text)
         cmb.primaryClip = clip
-        Toast.makeText(this, "copy success!", Toast.LENGTH_SHORT).show()
+        showToast("copy success!")
     }
 
     private fun showProcess() {
