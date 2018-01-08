@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
@@ -25,6 +26,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,8 +35,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import mushi.rikka.jyaoushingan.App;
-import mushi.rikka.jyaoushingan.main.MainActivity;
 import mushi.rikka.jyaoushingan.R;
+import mushi.rikka.jyaoushingan.main.MainActivity;
 
 /**
  * Created by branch on 2016-5-25.
@@ -66,12 +68,13 @@ public class FloatWindowsService extends Service {
     private WindowManager.LayoutParams mLayoutParams;
     private GestureDetector mGestureDetector;
 
-    private ImageView mFloatView;
+    private RelativeLayout mFloatLayout;
+    private ImageView mEyeView;
 
     private int mScreenWidth;
     private int mScreenHeight;
     private int mScreenDensity;
-
+    private boolean isFullScreen = false;
 
     @Override
     public void onCreate() {
@@ -118,18 +121,39 @@ public class FloatWindowsService extends Service {
         mLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
 
-        mFloatView = new ImageView(getApplicationContext());
-        mFloatView.setImageResource(R.mipmap.ic_launcher);
-        mWindowManager.addView(mFloatView, mLayoutParams);
+        mFloatLayout = new RelativeLayout(getApplicationContext());
+        mFloatLayout.setLayoutParams(mLayoutParams);
+
+        mEyeView = new ImageView(getApplicationContext());
+        mEyeView.setImageResource(R.mipmap.ic_launcher);
+
+        mFloatLayout.addView(mEyeView);
+
+        mWindowManager.addView(mFloatLayout, mLayoutParams);
 
 
-        mFloatView.setOnTouchListener(new View.OnTouchListener() {
+        mFloatLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return mGestureDetector.onTouchEvent(event);
             }
         });
+    }
 
+    private void toggleFullScreen() {
+        if (isFullScreen) {
+            mLayoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+            mLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            mEyeView.setVisibility(View.VISIBLE);
+            mFloatLayout.setBackgroundColor(Color.parseColor("#00000000"));
+        } else {
+            mLayoutParams.width = mScreenWidth;
+            mLayoutParams.height = mScreenHeight;
+            mEyeView.setVisibility(View.GONE);
+            mFloatLayout.setBackgroundColor(Color.parseColor("#99000000"));
+        }
+        isFullScreen = !isFullScreen;
+        mWindowManager.updateViewLayout(mFloatLayout, mLayoutParams);
     }
 
     private class FloatGestureTouchListener implements GestureDetector.OnGestureListener {
@@ -152,7 +176,9 @@ public class FloatWindowsService extends Service {
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-            startScreenShot();
+            if (!isFullScreen) {
+                startScreenShot();
+            }
             return true;
         }
 
@@ -163,13 +189,13 @@ public class FloatWindowsService extends Service {
             mLayoutParams.x = paramX + dx;
             mLayoutParams.y = paramY + dy;
             // 更新悬浮窗位置
-            mWindowManager.updateViewLayout(mFloatView, mLayoutParams);
+            mWindowManager.updateViewLayout(mFloatLayout, mLayoutParams);
             return true;
         }
 
         @Override
         public void onLongPress(MotionEvent e) {
-
+            toggleFullScreen();
         }
 
         @Override
@@ -181,7 +207,7 @@ public class FloatWindowsService extends Service {
 
     private void startScreenShot() {
 
-        mFloatView.setVisibility(View.GONE);
+        mFloatLayout.setVisibility(View.GONE);
 
         Handler handler1 = new Handler();
         handler1.postDelayed(new Runnable() {
@@ -318,7 +344,7 @@ public class FloatWindowsService extends Service {
 
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
-            mFloatView.setVisibility(View.VISIBLE);
+            mFloatLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -342,8 +368,8 @@ public class FloatWindowsService extends Service {
     public void onDestroy() {
         // to remove mFloatLayout from windowManager
         super.onDestroy();
-        if (mFloatView != null) {
-            mWindowManager.removeView(mFloatView);
+        if (mFloatLayout != null) {
+            mWindowManager.removeView(mFloatLayout);
         }
         stopVirtual();
         tearDownMediaProjection();
