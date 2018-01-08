@@ -65,6 +65,7 @@ public class FloatWindowsService extends Service {
 
 
     private ImageReader mImageReader;
+    private DisplayMetrics metrics;
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mLayoutParams;
     private GestureDetector mGestureDetector;
@@ -105,7 +106,7 @@ public class FloatWindowsService extends Service {
         mLayoutParams = new WindowManager.LayoutParams();
         mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 
-        DisplayMetrics metrics = new DisplayMetrics();
+        metrics = new DisplayMetrics();
         mWindowManager.getDefaultDisplay().getMetrics(metrics);
         mScreenDensity = metrics.densityDpi;
         mScreenWidth = metrics.widthPixels;
@@ -115,7 +116,10 @@ public class FloatWindowsService extends Service {
         mLayoutParams.format = PixelFormat.RGBA_8888;
         // 设置Window flag
         mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_FULLSCREEN
+                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
         mLayoutParams.gravity = Gravity.LEFT | Gravity.TOP;
         mLayoutParams.x = mScreenWidth;
         mLayoutParams.y = 100;
@@ -127,7 +131,7 @@ public class FloatWindowsService extends Service {
         mFloatLayout.setLayoutParams(mLayoutParams);
 
         mEyeView = new ImageView(getApplicationContext());
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(dpToPx(70), dpToPx(70));
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(dpToPx(50), dpToPx(50));
         mEyeView.setLayoutParams(layoutParams);
         mEyeView.setImageResource(R.mipmap.ic_launcher);
 
@@ -159,10 +163,12 @@ public class FloatWindowsService extends Service {
             mEyeView.setVisibility(View.VISIBLE);
             mFloatLayout.setBackgroundColor(Color.parseColor("#00000000"));
         } else {
-            mLayoutParams.width = mScreenWidth;
-            mLayoutParams.height = mScreenHeight;
             mEyeView.setVisibility(View.GONE);
             mFloatLayout.setBackgroundColor(Color.parseColor("#99000000"));
+
+            mWindowManager.getDefaultDisplay().getMetrics(metrics);
+            mLayoutParams.width = metrics.widthPixels + 500;
+            mLayoutParams.height = metrics.heightPixels;
         }
         isFullScreen = !isFullScreen;
         mWindowManager.updateViewLayout(mFloatLayout, mLayoutParams);
