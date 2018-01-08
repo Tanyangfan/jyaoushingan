@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -100,6 +101,7 @@ public class FloatWindowsService extends Service {
 
     private void createFloatView() {
         mGestureDetector = new GestureDetector(getApplicationContext(), new FloatGestureTouchListener());
+        mGestureDetector.setOnDoubleTapListener(new FloatDoubleTapListener());
         mLayoutParams = new WindowManager.LayoutParams();
         mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 
@@ -125,6 +127,8 @@ public class FloatWindowsService extends Service {
         mFloatLayout.setLayoutParams(mLayoutParams);
 
         mEyeView = new ImageView(getApplicationContext());
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(dpToPx(70), dpToPx(70));
+        mEyeView.setLayoutParams(layoutParams);
         mEyeView.setImageResource(R.mipmap.ic_launcher);
 
         mFloatLayout.addView(mEyeView);
@@ -138,6 +142,14 @@ public class FloatWindowsService extends Service {
                 return mGestureDetector.onTouchEvent(event);
             }
         });
+    }
+
+    private int dpToPx(int dp) {
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dp,
+                getApplication().getResources().getDisplayMetrics()
+        );
     }
 
     private void toggleFullScreen() {
@@ -154,6 +166,28 @@ public class FloatWindowsService extends Service {
         }
         isFullScreen = !isFullScreen;
         mWindowManager.updateViewLayout(mFloatLayout, mLayoutParams);
+    }
+
+    private class FloatDoubleTapListener implements GestureDetector.OnDoubleTapListener {
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
+            if (!isFullScreen) {
+                startScreenShot();
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent motionEvent) {
+            toggleFullScreen();
+            return true;
+        }
+
+        @Override
+        public boolean onDoubleTapEvent(MotionEvent motionEvent) {
+            return false;
+        }
     }
 
     private class FloatGestureTouchListener implements GestureDetector.OnGestureListener {
@@ -176,10 +210,7 @@ public class FloatWindowsService extends Service {
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-            if (!isFullScreen) {
-                startScreenShot();
-            }
-            return true;
+            return false;
         }
 
         @Override
