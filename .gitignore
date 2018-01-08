@@ -2,7 +2,6 @@
 *.apk
 *.ap_
 *.license
-*.output.json
 
 # Files for the ART/Dalvik VM
 *.dex
@@ -55,3 +54,5 @@ google-services.json
 freeline.py
 freeline/
 freeline_project_description.json
+
+output.json
